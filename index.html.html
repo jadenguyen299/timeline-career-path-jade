@@ -1,0 +1,338 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lộ trình phát triển bichnguyen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: header + hai khối tóm tắt (tỷ trọng, mức tham gia) rồi timeline dọc theo quý, cuối cùng là bảng điểm cần nâng. */
+:root{
+  --bg:#F4F7F8; --surface:#FFFFFF; --fg:#13222B; --muted:#586A74; --line:#D8E1E5;
+  --da:#0B6A70; --da-soft:#D5EDEE;
+  --se:#A94F08; --se-soft:#FBE5D1;
+  --bd:#4549AE; --bd-soft:#E2E3F7;
+  --oth:#4B5C66; --oth-soft:#E6ECEF;
+  --now:#0B6A70;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1A20; --surface:#15252D; --fg:#E5EDF0; --muted:#93A6B0; --line:#27393F;
+  --da:#5CC8CD; --da-soft:#143A3E; --se:#F2A767; --se-soft:#3A2A1A;
+  --bd:#A3A8F2; --bd-soft:#24284D; --oth:#A9BAC3; --oth-soft:#22333A; --now:#5CC8CD; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1A20; --surface:#15252D; --fg:#E5EDF0; --muted:#93A6B0; --line:#27393F;
+  --da:#5CC8CD; --da-soft:#143A3E; --se:#F2A767; --se-soft:#3A2A1A;
+  --bd:#A3A8F2; --bd-soft:#24284D; --oth:#A9BAC3; --oth-soft:#22333A; --now:#5CC8CD; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6}
+*{box-sizing:border-box}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 20px 64px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3,p,ul{margin:0}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.2;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h3{font-size:18px;line-height:1.35;font-weight:600;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--da)}
+header.top{display:flex;flex-direction:column;gap:14px}
+.lede{max-width:65ch;color:var(--muted)}
+.lede q{color:var(--fg);quotes:none}
+.row2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px}
+@media(max-width:760px){.row2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.split{display:flex;height:34px;border-radius:6px;overflow:hidden;font-family:var(--f-mono);font-size:13px;color:#fff}
+.split div{display:flex;align-items:center;padding-inline:12px}
+.split .a{width:80%;background:var(--da)}.split .b{width:20%;background:var(--se)}
+:root[data-theme="dark"] .split{color:#0E1A20}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .split{color:#0E1A20}}
+.why{display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:14px}
+.why li{list-style:none;padding-left:0}
+.scroll{overflow-x:auto}
+table.mx{border-collapse:collapse;width:100%;min-width:430px}
+.mx th,.mx td{padding:7px 4px;text-align:center;font-weight:500;font-size:12px;color:var(--muted)}
+.mx thead th{font-family:var(--f-mono);font-size:11px}
+.mx tbody th{text-align:left;width:84px}
+.chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.chip.da{background:var(--da-soft);color:var(--da)}.chip.se{background:var(--se-soft);color:var(--se)}.chip.bd{background:var(--bd-soft);color:var(--bd)}
+.chip.pm,.chip.cm{background:var(--oth-soft);color:var(--oth)}
+.lvl.l3,.lvl.l4{}
+.lv{display:block;border-radius:4px;padding:5px 2px;font-size:11px;white-space:nowrap}
+.l0{color:var(--line)}
+.l1{background:var(--oth-soft);color:var(--oth)}
+.l2{background:var(--da-soft);color:var(--da)}
+.l3{background:var(--da);color:var(--bg)}
+.l4{background:var(--fg);color:var(--bg)}
+.lhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lvl{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.dot{flex:none;width:9px;height:9px;border-radius:50%;margin-top:.55em;border:2px solid var(--muted)}
+.legend .dot{margin:0}
+.own .dot{background:var(--muted)}
+.prop .dot{background:transparent}
+.alloc{display:flex;flex-direction:column;gap:8px}
+.arow{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:center}
+.aq{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.abar{display:flex;height:30px;gap:2px}
+.s{display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;color:var(--bg);border-radius:3px;min-width:0}
+.s.a{background:var(--da)}.s.b{background:var(--se)}.s.c{background:var(--oth)}
+.akey{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted)}
+.akey span{display:inline-flex;align-items:center;gap:6px}
+.akey i{width:12px;height:12px;border-radius:2px;display:inline-block}
+.akey .a{background:var(--da)}.akey .b{background:var(--se)}.akey .c{background:var(--oth)}
+.akey .unit{margin-left:auto;font-family:var(--f-mono);font-size:11.5px}
+.lane li.blank{color:var(--muted);font-size:13px;font-style:italic}
+/* timeline */
+.tl{display:flex;flex-direction:column;gap:0;position:relative}
+.q{display:grid;grid-template-columns:150px minmax(0,1fr);gap:24px;padding-block:24px;border-top:1px solid var(--line)}
+.q:last-child{border-bottom:1px solid var(--line)}
+.qhead{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.qname{font-family:var(--f-mono);font-size:20px;color:var(--fg)}
+.dates{font-size:12px;color:var(--muted)}
+.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;margin-top:6px}
+.pill.now{background:var(--now);color:#fff}
+:root[data-theme="dark"] .pill.now{color:#0E1A20}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill.now{color:#0E1A20}}
+.q.cur .qname{color:var(--da)}
+.qbody{display:flex;flex-direction:column;gap:8px;min-width:0}
+.goal{color:var(--muted);font-size:14px;max-width:65ch}
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:10px}
+.lane{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.lname{align-self:flex-start;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px}
+.lane.da .lname{background:var(--da-soft);color:var(--da)}.lane.se .lname{background:var(--se-soft);color:var(--se)}.lane.bd .lname{background:var(--bd-soft);color:var(--bd)}
+.lane.pm .lname,.lane.cm .lname{background:var(--oth-soft);color:var(--oth)}
+.lane ul{padding:0;display:flex;flex-direction:column;gap:9px}
+.lane li{list-style:none;display:flex;gap:10px;font-size:14px;line-height:1.5}
+.imp{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--se);background:var(--se-soft);padding:1px 6px;border-radius:3px;margin-left:4px;white-space:nowrap}
+@media(max-width:640px){.q{grid-template-columns:minmax(0,1fr);gap:12px}.qhead{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px}.pill{margin-top:0}.lanes{grid-template-columns:minmax(0,1fr)}}
+/* skills */
+.sk{padding:0;display:flex;flex-direction:column}
+.sk li{list-style:none;display:grid;grid-template-columns:minmax(0,1fr) 150px 56px;gap:4px 16px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.sk li:first-child{border-top:0}
+.sn{display:flex;gap:10px;align-items:center;min-width:0}
+.sn span:last-child{font-weight:500}
+.bar{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.bar i{height:10px;border-radius:2px;background:var(--oth-soft);position:relative}
+.bar i.f{background:var(--da)}
+.bar i.g{background:var(--da-soft);box-shadow:inset 0 0 0 1.5px var(--da)}
+.bar i.ex::after{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--fg);border-radius:1px}
+.sv{font-family:var(--f-mono);font-size:13px;text-align:right}
+.snote{grid-column:1/-1;font-size:13px;color:var(--muted);padding-left:2px}
+.watch .sv{color:var(--se)}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted)}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.key i{display:inline-block;width:16px;height:10px;border-radius:2px}
+.k1{background:var(--da)}.k2{background:var(--da-soft);box-shadow:inset 0 0 0 1.5px var(--da)}
+.k3{width:2px!important;height:14px!important;background:var(--fg);border-radius:1px}
+@media(max-width:640px){.sk li{grid-template-columns:minmax(0,1fr) 56px}.sk .bar{grid-column:1;grid-row:2}.sk .sv{grid-column:2;grid-row:2}}
+p.scale{font-size:12.5px;color:var(--muted)}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.agroup{display:flex;flex-direction:column;gap:6px;min-width:0}
+.agroup h3{font-size:15px}
+.alist{padding:0;display:flex;flex-direction:column}
+.alist li{list-style:none;display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:start;padding:11px 0;border-top:1px solid var(--line)}
+.alist li:first-child{border-top:0}
+.box{width:16px;height:16px;border:1.5px solid var(--muted);border-radius:4px;margin-top:3px}
+.atop{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.anote{font-size:12.5px;color:var(--muted);margin-top:2px}
+.when{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;padding-top:3px}
+@media(max-width:640px){.alist li{grid-template-columns:18px minmax(0,1fr)}.when{grid-column:2;padding-top:0}}
+.thead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px}
+.overall{display:flex;align-items:baseline;gap:10px}
+.opct{font-family:var(--f-mono);font-size:34px;line-height:1;color:var(--da)}
+.ocap{font-size:13px;color:var(--muted)}
+table.pt{border-collapse:collapse;width:100%;min-width:560px}
+.pt th,.pt td{padding:9px 8px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+.pt thead th{border-top:0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.pt tbody th{font-family:var(--f-mono);font-size:13px;font-weight:500;white-space:nowrap}
+.pt tr.sum th,.pt tr.sum td{border-top:2px solid var(--fg);font-weight:600}
+.pt td.none{color:var(--line);font-family:var(--f-mono)}
+.pc{display:flex;justify-content:space-between;gap:8px;font-family:var(--f-mono);font-size:12px;margin-bottom:4px}
+.pc .pp{color:var(--muted)}
+.pbar{height:6px;border-radius:3px;background:var(--oth-soft);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--da);border-radius:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip-b{font:inherit;font-size:13px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip-b[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip-b:focus-visible,.cb:focus-visible{outline:2px solid var(--da);outline-offset:2px}
+.months{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.mc{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.mc.cur{border-color:var(--da)}
+.mh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mh h3{font-size:15px}
+.mh .cnt{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.now-tag{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--da);margin-left:8px}
+.tl2{padding:0;display:flex;flex-direction:column}
+.tl2 li{list-style:none;display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.tl2 li:first-child{border-top:0}
+.cb{width:20px;height:20px;border:1.5px solid var(--muted);border-radius:5px;background:var(--surface);padding:0;margin-top:2px;cursor:pointer;position:relative}
+.cb[aria-checked="true"]{background:var(--da);border-color:var(--da)}
+.cb[aria-checked="true"]::after{content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.cb:disabled{cursor:default;opacity:.7}
+.ttxt{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:14px;line-height:1.5}
+.tl2 li.done .ttxt span.tx{color:var(--muted);text-decoration:line-through}
+.tnote{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));max-width:min(92vw,420px);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:13.5px;z-index:5}
+.tabs{display:flex;gap:4px;overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--bg);border-bottom:1px solid var(--line);margin-block:-16px 0;padding-block:8px 0}
+.tab{font:inherit;font-size:14px;font-weight:500;white-space:nowrap;padding:9px 16px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--da)}
+.tab:focus-visible{outline:2px solid var(--da);outline-offset:-2px}
+[role="tabpanel"][hidden]{display:none!important}
+footer{font-size:13px;color:var(--muted);max-width:65ch}
+</style>
+<main class="wrap">
+<header class="top">
+  <div class="eyebrow">Q4/2026 – Q4/2027 · bichnguyen</div>
+  <h1>Lộ trình phát triển bản thân</h1>
+  <p class="lede">DA là trục chính: đi sâu vào phân tích dữ liệu, nhìn ra insight và tư vấn cho khách thay vì chỉ làm báo cáo theo yêu cầu. Song song, thử sức ở SE, PM và Builder để hiểu cách cả team vận hành và tìm ra hướng phù hợp nhất.</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Các phần của lộ trình">
+  <button type="button" role="tab" class="tab" id="t-overview" data-tab="overview" aria-controls="tab-overview">Tổng quan</button>
+  <button type="button" role="tab" class="tab" id="t-timeline" data-tab="timeline" aria-controls="tab-timeline">Timeline theo quý</button>
+  <button type="button" role="tab" class="tab" id="t-tracker" data-tab="tracker" aria-controls="tab-tracker">Theo dõi tiến độ</button>
+</div>
+
+<section class="row2" id="tab-overview" role="tabpanel" aria-labelledby="t-overview">
+  <div class="panel">
+    <h2>Tỷ trọng thời gian theo quý</h2>
+    <div class="akey"><span><i class="a"></i>DA</span><span><i class="b"></i>SE</span><span><i class="c"></i>PM</span><span class="unit">% thời gian</span></div><div class="alloc"><div class="arow"><span class="aq">Q4/26</span><div class="abar" role="img" aria-label="Q4/26: DA 80, SE 20, PM 0"><div class="s a" style="width:80%">80</div><div class="s b" style="width:20%">20</div></div></div><div class="arow"><span class="aq">Q1/27</span><div class="abar" role="img" aria-label="Q1/27: DA 60, SE 25, PM 15"><div class="s a" style="width:60%">60</div><div class="s b" style="width:25%">25</div><div class="s c" style="width:15%">15</div></div></div><div class="arow"><span class="aq">Q2/27</span><div class="abar" role="img" aria-label="Q2/27: DA 60, SE 25, PM 15"><div class="s a" style="width:60%">60</div><div class="s b" style="width:25%">25</div><div class="s c" style="width:15%">15</div></div></div><div class="arow"><span class="aq">Q3/27</span><div class="abar" role="img" aria-label="Q3/27: DA 50, SE 30, PM 20"><div class="s a" style="width:50%">50</div><div class="s b" style="width:30%">30</div><div class="s c" style="width:20%">20</div></div></div><div class="arow"><span class="aq">Q4/27</span><div class="abar" role="img" aria-label="Q4/27: DA 50, SE 30, PM 20"><div class="s a" style="width:50%">50</div><div class="s b" style="width:30%">30</div><div class="s c" style="width:20%">20</div></div></div></div>
+    <p class="scale">Mức tham gia của mảng càng cao thì tỷ trọng càng tăng: SE và PM tăng dần theo từng mức, DA giữ phần lớn nhất.</p>
+    <ul class="why" style="padding:0">
+      <li>DA: nâng kỹ năng Power BI và BigQuery để làm tốt sản phẩm của mình, nhìn ra insight và tư vấn lại cho khách.</li>
+      <li>SE: học cách biến nhu cầu của khách thành giải pháp dữ liệu hoàn chỉnh và trình bày rõ ràng.</li>
+      <li>PM: theo dõi tiến độ, quản lý nguồn nhân lực và scope công việc.</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h2>Mức tham gia theo mảng</h2>
+    <div class="scroll"><table class="mx"><thead><tr><th></th><th>Q4/26</th><th>Q1/27</th><th>Q2/27</th><th>Q3/27</th><th>Q4/27</th></tr></thead><tbody><tr><th scope="row"><span class="chip da">DA</span></th><td><span class="lv l2">Độc lập</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l4">Dẫn dắt</span></td></tr><tr><th scope="row"><span class="chip se">SE</span></th><td><span class="lv l1">Hỗ trợ</span></td><td><span class="lv l2">Độc lập</span></td><td><span class="lv l2">Độc lập</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td></tr><tr><th scope="row"><span class="chip pm">PM</span></th><td><span class="lv l1">Hỗ trợ</span></td><td><span class="lv l2">Độc lập</span></td><td><span class="lv l2">Độc lập</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td></tr><tr><th scope="row"><span class="chip bd">Builder</span></th><td><span class="lv l1">Hỗ trợ</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td><td><span class="lv l3">Chủ động</span></td></tr></tbody></table></div>
+    <p class="scale">Thang phát triển: Hỗ trợ → Độc lập → Chủ động → Dẫn dắt</p>
+  </div>
+</section>
+
+<section id="tab-timeline" role="tabpanel" aria-labelledby="t-timeline" hidden style="display:flex;flex-direction:column;gap:14px">
+  <h2>Timeline theo quý</h2>
+  <div class="legend"><span><i class="dot" style="background:var(--muted);border-color:var(--muted)"></i>Đã ghi trong kế hoạch quý 4</span><span><i class="dot" style="background:transparent"></i>Đề xuất bổ sung</span></div>
+  <div class="tl">
+<article class="q cur"><div class="qhead"><div class="qname">Q4/2026</div><div class="dates">1/10 – 31/12/2026</div><span class="pill now">Đang diễn ra</span></div><div class="qbody"><h3>Vững nền DA, hỗ trợ SE và PM</h3><p class="goal">Nâng 7 tiêu chí ở bảng điểm: tổng quan vấn đề, giải quyết vấn đề, tư duy dữ liệu, giá trị cho khách, vượt kỳ vọng, cầu tiến, thuyết trình/demo.</p><div class="lanes"><div class="lane da"><div class="lhead"><div class="lname">DA</div><span class="lvl l2">Độc lập</span></div><ul><li class="own"><span class="dot" aria-hidden="true"></span><span>Hoàn thành các báo cáo theo mỗi dự án <b class=imp>Quan trọng</b></span></li><li class="own"><span class="dot" aria-hidden="true"></span><span>Duy trì báo cáo hoạt động đúng logic khách hàng</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Với mỗi báo cáo, ghi lại lý do số liệu lên hoặc xuống để trả lời stakeholder nhanh</span></li></ul></div><div class="lane se"><div class="lhead"><div class="lname">SE</div><span class="lvl l1">Hỗ trợ</span></div><ul><li class="own"><span class="dot" aria-hidden="true"></span><span>Hỗ trợ làm demo giải pháp cho khách hàng</span></li></ul></div><div class="lane pm"><div class="lhead"><div class="lname">PM</div><span class="lvl l1">Hỗ trợ</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Hỗ trợ nhóm trưởng cập nhật tiến độ và tổng hợp phản hồi của khách</span></li></ul></div><div class="lane bd"><div class="lhead"><div class="lname">Builder</div><span class="lvl l1">Hỗ trợ</span></div><ul><li class="own"><span class="dot" aria-hidden="true"></span><span>Hỗ trợ xây dựng luồng quy trình trên hệ thống 3.0</span></li><li class="own"><span class="dot" aria-hidden="true"></span><span>Kiểm thử và đảm bảo luồng hoạt động đúng</span></li></ul></div></div></div></article>
+<article class="q"><div class="qhead"><div class="qname">Q1/2027</div><div class="dates">1/1 – 31/3/2027</div></div><div class="qbody"><h3>DA chủ động hơn, SE và PM tự làm phần việc nhỏ</h3><p class="goal">Chuyển từ làm báo cáo theo yêu cầu sang đề xuất góc nhìn dữ liệu.</p><div class="lanes"><div class="lane da"><div class="lhead"><div class="lname">DA</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Đọc kỹ số liệu của báo cáo mình làm ra để thấy xu hướng và điểm bất thường, dùng BigQuery đào sâu khi cần</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Mỗi tháng chọn ra 1 đến 2 insight hay cho từng case và tư vấn lại cho khách</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Chỉnh báo cáo Power BI để nổi bật insight và trả lời sẵn câu khách hay hỏi</span></li></ul></div><div class="lane se"><div class="lhead"><div class="lname">SE</div><span class="lvl l2">Độc lập</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Tự chuẩn bị dữ liệu mẫu và kịch bản demo cho SE</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Quan sát buổi khảo sát khách, ghi lại câu hỏi hay</span></li></ul></div><div class="lane pm"><div class="lhead"><div class="lname">PM</div><span class="lvl l2">Độc lập</span></div><ul><li class="own"><span class="dot" aria-hidden="true"></span><span>Hỗ trợ PM về tình hình tiến độ của dự án</span></li></ul></div><div class="lane bd"><div class="lhead"><div class="lname">Builder</div><span class="lvl l3">Chủ động</span></div><ul><li class="blank">Để trống, bổ sung sau</li></ul></div></div></div></article>
+<article class="q"><div class="qhead"><div class="qname">Q2/2027</div><div class="dates">1/4 – 30/6/2027</div></div><div class="qbody"><h3>SE ra khách, tự làm PM dự án nhỏ</h3><p class="goal">Tham gia khảo sát và demo sâu hơn; nâng tư duy giải pháp, kiến trúc từ mức 2 lên 3.</p><div class="lanes"><div class="lane da"><div class="lhead"><div class="lname">DA</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Giữ chuẩn báo cáo, thêm dashboard tổng quan theo từng case</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Chủ động đề xuất chỉ số mới cho khách khi thấy xu hướng bất thường</span></li></ul></div><div class="lane se"><div class="lhead"><div class="lname">SE</div><span class="lvl l2">Độc lập</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Cùng SE khảo sát khách mới, đặt câu hỏi khảo sát</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Tự dẫn một phần demo cho khách</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Học cách làm proposal cho khách lớn từ quản lý</span></li></ul></div><div class="lane pm"><div class="lhead"><div class="lname">PM</div><span class="lvl l2">Độc lập</span></div><ul><li class="own"><span class="dot" aria-hidden="true"></span><span>Tự làm PM của một dự án size vừa-nhỏ</span></li></ul></div><div class="lane bd"><div class="lhead"><div class="lname">Builder</div><span class="lvl l3">Chủ động</span></div><ul><li class="blank">Để trống, bổ sung sau</li></ul></div></div></div></article>
+<article class="q"><div class="qhead"><div class="qname">Q3/2027</div><div class="dates">1/7 – 30/9/2027</div></div><div class="qbody"><h3>DA, SE và PM cùng chủ động</h3><p class="goal">Làm quen cách điều phối công việc theo lộ trình cầu tiến đã ghi trong bảng tiêu chí.</p><div class="lanes"><div class="lane da"><div class="lhead"><div class="lname">DA</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Duy trì chuẩn báo cáo chung của các case</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Chủ động cải tiến template theo phản hồi của khách</span></li></ul></div><div class="lane se"><div class="lhead"><div class="lname">SE</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Đề xuất giải pháp dữ liệu cho một case nhỏ và dẫn demo trọn vẹn</span></li></ul></div><div class="lane pm"><div class="lhead"><div class="lname">PM</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Chủ động theo dõi tiến độ, quản lý nguồn nhân lực và scope công việc của dự án</span></li></ul></div><div class="lane bd"><div class="lhead"><div class="lname">Builder</div><span class="lvl l3">Chủ động</span></div><ul><li class="blank">Để trống, bổ sung sau</li></ul></div></div></div></article>
+<article class="q"><div class="qhead"><div class="qname">Q4/2027</div><div class="dates">1/10 – 31/12/2027</div></div><div class="qbody"><h3>Tổng kết và chọn hướng 2028</h3><p class="goal">Tự đánh giá lại toàn bộ bảng tiêu chí và chốt tỷ trọng cho năm sau.</p><div class="lanes"><div class="lane da"><div class="lhead"><div class="lname">DA</div><span class="lvl l4">Dẫn dắt</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Hướng dẫn lại quy trình và template cho người mới</span></li><li class="prop"><span class="dot" aria-hidden="true"></span><span>Tổng hợp các insight hay đã tư vấn cho khách và sản phẩm đã làm ra</span></li></ul></div><div class="lane se"><div class="lhead"><div class="lname">SE</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Tham gia một deal từ khảo sát đến demo</span></li></ul></div><div class="lane pm"><div class="lhead"><div class="lname">PM</div><span class="lvl l3">Chủ động</span></div><ul><li class="prop"><span class="dot" aria-hidden="true"></span><span>Chốt kế hoạch và rủi ro của một case cùng nhóm trưởng</span></li></ul></div><div class="lane bd"><div class="lhead"><div class="lname">Builder</div><span class="lvl l3">Chủ động</span></div><ul><li class="blank">Để trống, bổ sung sau</li></ul></div></div></div></article>
+  </div>
+</section>
+
+<section id="tab-tracker" role="tabpanel" aria-labelledby="t-tracker" class="panel" hidden>
+  <div class="thead"><h2>Theo dõi tiến độ</h2><div class="overall" aria-live="polite"><span class="opct" id="opct">–</span><span class="ocap" id="ocap">Đang tải danh sách việc</span></div></div>
+  <div class="scroll"><table class="pt" id="ptable"></table></div>
+  <div class="chips" id="qchips" role="group" aria-label="Chọn quý"></div>
+  <div class="months" id="months"></div>
+  <p class="tnote" id="tnote" hidden></p>
+</section>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<footer>Nội dung Q4/2026 lấy từ kế hoạch quý 4 đã điền, tỷ trọng Q4/2026 là 80 DA / 20 SE. Tỷ trọng và nội dung từ Q1/2027 là đề xuất ban đầu, sẽ điều chỉnh theo đánh giá cuối mỗi quý và phản hồi từ nhóm trưởng.</footer>
+</main>
+<script>
+(function(){
+var names=["overview","timeline","tracker"];
+function show(n,persist){
+  if(names.indexOf(n)<0)n="overview";
+  names.forEach(function(x){
+    var p=document.getElementById("tab-"+x),b=document.getElementById("t-"+x);
+    p.hidden=(x!==n);b.setAttribute("aria-selected",String(x===n));b.tabIndex=(x===n)?0:-1;
+  });
+  if(persist){try{localStorage.setItem("lotrinh-tab",n)}catch(e){}try{history.replaceState(null,"","#"+n)}catch(e){}}
+}
+var start=(location.hash||"").slice(1);
+if(names.indexOf(start)<0){try{start=localStorage.getItem("lotrinh-tab")}catch(e){start=null}}
+show(start,false);
+document.querySelectorAll(".tab").forEach(function(b){
+  b.addEventListener("click",function(){show(b.getAttribute("data-tab"),true)});
+  b.addEventListener("keydown",function(e){
+    var i=names.indexOf(b.getAttribute("data-tab")),j=-1;
+    if(e.key==="ArrowRight")j=(i+1)%3;else if(e.key==="ArrowLeft")j=(i+2)%3;
+    if(j>=0){e.preventDefault();show(names[j],true);document.getElementById("t-"+names[j]).focus()}
+  });
+});
+})();
+</script>
+<script>
+(function(){
+var ROLES=["DA","SE","PM","Builder","Chung"];
+var RCLS={DA:"da",SE:"se",PM:"pm",Builder:"bd",Chung:"cm"};
+var QS=["Q4/2026","Q1/2027","Q2/2027","Q3/2027","Q4/2027"];
+var QSHORT={"Q4/2026":"Q4/26","Q1/2027":"Q1/27","Q2/2027":"Q2/27","Q3/2027":"Q3/27","Q4/2027":"Q4/27"};
+var tasks=[],db=null,canWrite=true,pending={},sel=null,loaded=false;
+function $(id){return document.getElementById(id)}
+function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n}
+function qOf(m){var y=m.slice(0,4),mo=parseInt(m.slice(5),10);return "Q"+Math.ceil(mo/3)+"/"+y}
+function pct(d,t){return t?Math.round(100*d/t):0}
+function nowKey(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)}
+function curQuarter(){var q=qOf(nowKey());return QS.indexOf(q)>=0?q:QS[0]}
+try{sel=localStorage.getItem("lotrinh-q")}catch(e){}
+if(sel!=="all"&&QS.indexOf(sel)<0)sel=curQuarter();
+function toast(msg){var t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(function(){t.hidden=true},3500)}
+function stat(list){var d=0;list.forEach(function(x){if(x.done)d++});return{d:d,t:list.length}}
+function renderTable(){
+  var tb=$("ptable");tb.textContent="";
+  var th=el("thead"),tr=el("tr");tr.appendChild(el("th",null,"Quý"));
+  ROLES.forEach(function(r){tr.appendChild(el("th",null,r))});tr.appendChild(el("th",null,"Tổng"));th.appendChild(tr);tb.appendChild(th);
+  var body=el("tbody");
+  function cell(list){var td=el("td");var s=stat(list);if(!s.t){td.className="none";td.textContent="–";return td}
+    var p=pct(s.d,s.t),c=el("div","pc");c.appendChild(el("span","pn",s.d+"/"+s.t));c.appendChild(el("span","pp",p+"%"));td.appendChild(c);
+    var b=el("div","pbar"),i=el("i");i.style.width=p+"%";b.appendChild(i);td.appendChild(b);return td}
+  QS.forEach(function(q){
+    var tr=el("tr");tr.appendChild(el("th",null,q));var ql=tasks.filter(function(x){return qOf(x.month)===q});
+    ROLES.forEach(function(r){tr.appendChild(cell(ql.filter(function(x){return x.role===r})))});tr.appendChild(cell(ql));body.appendChild(tr)});
+  var sr=el("tr","sum");sr.appendChild(el("th",null,"Tổng"));
+  ROLES.forEach(function(r){sr.appendChild(cell(tasks.filter(function(x){return x.role===r})))});sr.appendChild(cell(tasks));body.appendChild(sr);
+  tb.appendChild(body);
+  var s=stat(tasks);$("opct").textContent=s.t?pct(s.d,s.t)+"%":"–";
+  $("ocap").textContent=s.t?"đã hoàn thành ("+s.d+"/"+s.t+" việc)":"";
+}
+function renderChips(){
+  var box=$("qchips");box.textContent="";
+  QS.concat(["all"]).forEach(function(q){
+    var b=el("button","chip-b",q==="all"?"Cả lộ trình":QSHORT[q]);b.type="button";b.setAttribute("aria-pressed",String(sel===q));
+    b.addEventListener("click",function(){sel=q;try{localStorage.setItem("lotrinh-q",q)}catch(e){}renderChips();renderMonths()});box.appendChild(b)});
+}
+function toggle(t){
+  if(!db||pending[t.id])return;pending[t.id]=1;
+  db.collection("tasks").doc(t.id).update({done:!t.done}).catch(function(){toast("Chưa lưu được. Chỉ người có quyền chỉnh sửa mới tick được tiến độ.")}).then(function(){delete pending[t.id]});
+}
+function renderMonths(){
+  var box=$("months");box.textContent="";var note=$("tnote");
+  if(!tasks.length){note.hidden=false;note.textContent=loaded?"Chưa có việc nào trong bảng theo dõi.":"Đang tải danh sách việc.";return}
+  note.hidden=!(!canWrite);if(!canWrite)note.textContent="Bạn đang xem ở chế độ chỉ đọc. Chỉ người có quyền chỉnh sửa mới tick được.";
+  var months={};tasks.forEach(function(t){if(sel==="all"||qOf(t.month)===sel){(months[t.month]=months[t.month]||[]).push(t)}});
+  var nk=nowKey();
+  Object.keys(months).sort().forEach(function(m){
+    var list=months[m].sort(function(a,b){return a.ord-b.ord}),s=stat(list);
+    var c=el("article","mc"+(m===nk?" cur":""));
+    var h=el("div","mh"),h3=el("h3",null,"Tháng "+parseInt(m.slice(5),10)+"/"+m.slice(0,4));
+    if(m===nk)h3.appendChild(el("span","now-tag","Tháng này"));
+    h.appendChild(h3);h.appendChild(el("span","cnt",s.d+"/"+s.t+" · "+pct(s.d,s.t)+"%"));c.appendChild(h);
+    var b=el("div","pbar"),i=el("i");i.style.width=pct(s.d,s.t)+"%";b.appendChild(i);c.appendChild(b);
+    var ul=el("ul","tl2");
+    list.forEach(function(t){
+      var li=el("li",t.done?"done":"");
+      var cb=el("button","cb");cb.type="button";cb.setAttribute("role","checkbox");cb.setAttribute("aria-checked",String(!!t.done));cb.setAttribute("aria-label",t.text);cb.disabled=!canWrite;
+      cb.addEventListener("click",function(){toggle(t)});li.appendChild(cb);
+      var tx=el("div","ttxt");tx.appendChild(el("span","chip "+(RCLS[t.role]||"cm"),t.role));tx.appendChild(el("span","tx",t.text));
+      if(t.imp)tx.appendChild(el("b","imp","Quan trọng"));
+      li.appendChild(tx);ul.appendChild(li)});
+    c.appendChild(ul);box.appendChild(c)});
+}
+function renderAll(){renderTable();renderMonths()}
+renderChips();renderAll();
+if(!window.claude||!window.claude.use){$("ocap").textContent="Cần mở trang trong claude.ai để lưu tiến độ";return}
+Promise.all([window.claude.use("db"),window.claude.use("user")]).then(function(r){
+  db=r[0];var user=r[1];
+  if(!db){$("ocap").textContent="Đăng nhập để xem và cập nhật tiến độ";return}
+  if(user&&user.can&&user.can("data.write")===false)canWrite=false;
+  db.collection("tasks").onSnapshot(function(snap){
+    loaded=true;tasks=snap.docs.map(function(d){var x=d.data()||{};x.id=d.id;return x}).filter(function(x){return x.month&&x.text});
+    renderAll();
+  },function(){loaded=true;$("ocap").textContent="Không đọc được dữ liệu tiến độ";renderAll()});
+});
+})();
+</script>
+
+</body></html>
